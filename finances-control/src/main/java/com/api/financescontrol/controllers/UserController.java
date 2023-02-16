@@ -6,7 +6,6 @@ import com.api.financescontrol.dtos.user.UserViewDTO;
 import com.api.financescontrol.dtos.user.UsersAllDTO;
 import com.api.financescontrol.models.UserModel;
 import com.api.financescontrol.services.UserService;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -18,10 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

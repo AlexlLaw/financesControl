@@ -27,6 +27,7 @@ public class ExpenseCreateDTO {
     private Boolean paidOut;
     private UUID userId;
     private String typeOfExpense;
+    private String paymentVoucher;
 
     public ExpenseCreateDTO() {
 

@@ -1,6 +1,9 @@
 package com.api.financescontrol.services;
 
-import com.api.financescontrol.dtos.user.*;
+import com.api.financescontrol.dtos.user.UserFinancialCalculationDTO;
+import com.api.financescontrol.dtos.user.UserUpdateDTO;
+import com.api.financescontrol.dtos.user.UserViewDTO;
+import com.api.financescontrol.dtos.user.UsersAllDTO;
 import com.api.financescontrol.models.UserModel;
 import com.api.financescontrol.repositories.UserRepository;
 import jakarta.transaction.Transactional;
@@ -78,6 +81,7 @@ public class UserService {
 
     private UsersAllDTO toUsersAllDTO(UserModel userModels) {
        return UsersAllDTO.builder()
+               .id(userModels.getId())
                 .cpf(userModels.getCpf())
                 .name(userModels.getName())
                 .lastName(userModels.getLastName())

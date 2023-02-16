@@ -1,5 +1,6 @@
 package com.api.financescontrol.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,47 +55,14 @@ public class ExpenseModel implements Serializable {
     @Column(nullable = true, unique = false)
     private UUID parentExpenseId;
 
+    @Column(nullable = true, unique = false)
+    private String paymentVoucher;
+
     @ManyToOne
     @JoinColumn(name="user_id")
+    @JsonIgnore
     private UserModel user;
 
     @Column(nullable = false)
     private LocalDateTime registrationDate;
-
 }
-//    public void saveExpense(ExpenseModel expense) {
-//        if (expense.getIsFixed() && expense.getTimeAccount() != null) {
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.set(Calendar.YEAR, expense.getYear());
-//            calendar.set(Calendar.MONTH, expense.getMonth());
-//
-//            ExpenseModel firstExpense = null;
-//
-//            for (int i = 0; i < expense.getTimeAccount(); i++) {
-//
-//                ExpenseModel newExpense = ExpenseModel.builder()
-//                        .year(calendar.get(Calendar.YEAR))
-//                        .month(calendar.get(Calendar.MONTH))
-//                        .nameExpense(expense.getNameExpense())
-//                        .descriptionExpense(expense.getDescriptionExpense())
-//                        .value(expense.getValue())
-//                        .isFixed(expense.getIsFixed())
-//                        .paidOut(expense.getPaidOut())
-//                        .typeOfExpense(expense.getTypeOfExpense())
-//                        .user(expense.getUser())
-//                        .registrationDate(LocalDateTime.now())
-//                        .build();
-//
-//                if (firstExpense != null) {
-//                    firstExpense = expenseRepository.save(newExpense);
-//                } else {
-//                    newExpense.setParentExpenseId(firstExpense.getId());
-//                    expenseRepository.save(newExpense);
-//                }
-//                calendar.add(Calendar.MONTH, 1);
-//            }
-//        } else {
-//            expense.setRegistrationDate(LocalDateTime.now());
-//            expenseRepository.save(expense);
-//        }
-//    }
