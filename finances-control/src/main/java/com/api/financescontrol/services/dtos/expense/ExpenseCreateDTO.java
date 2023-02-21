@@ -1,29 +1,17 @@
-package com.api.financescontrol.dtos.expense;
+package com.api.financescontrol.services.dtos.expense;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Builder
 @Data
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor
-public class ExpensesAllDTO {
-    private UUID userId;
-    private UUID id;
-
-    @NotBlank
-    @Size(max = 4)
-    private Integer year;
-
-    @NotBlank
-    @Size(max = 2)
-    private Integer month;
+public class ExpenseCreateDTO {
 
     @NotBlank
     @Size(max = 36)
@@ -31,10 +19,17 @@ public class ExpensesAllDTO {
 
     @Size(max = 255)
     private String descriptionExpense;
-
+    private Integer year;
+    private Integer month;
     private Integer value;
     private Boolean isFixed;
     private Integer timeAccount;
     private Boolean paidOut;
+    private UUID userId;
     private String typeOfExpense;
+    private String paymentVoucher;
+
+    public ExpenseCreateDTO() {
+
+    }
 }

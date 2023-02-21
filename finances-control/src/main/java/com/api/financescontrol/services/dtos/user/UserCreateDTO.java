@@ -1,4 +1,4 @@
-package com.api.financescontrol.dtos.user;
+package com.api.financescontrol.services.dtos.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class UserUpdateDTO {
+public class UserCreateDTO {
 
     @NotBlank
     @Size(max = 11)
@@ -36,7 +36,7 @@ public class UserUpdateDTO {
 
     private double wage;
 
-    public UserUpdateDTO() {
+    public UserCreateDTO() {
 
     }
 }

@@ -1,20 +1,17 @@
 package com.api.financescontrol.services;
 
-import com.api.financescontrol.dtos.expense.ExpenseCreateDTO;
-import com.api.financescontrol.dtos.expense.ExpensesAllDTO;
+import com.api.financescontrol.services.dtos.expense.ExpenseAllDTO;
+import com.api.financescontrol.services.dtos.expense.ExpenseCreateDTO;
+import com.api.financescontrol.services.dtos.expense.ExpensesAllDTO;
+import com.api.financescontrol.enums.TypeofExpense;
 import com.api.financescontrol.models.ExpenseModel;
 import com.api.financescontrol.repositories.ExpenseRepository;
 import com.api.financescontrol.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -40,13 +37,36 @@ public class ExpenseService {
         saveExpense(expenseModel);
     }
 
-    public List<ExpensesAllDTO> findAllByUser(UUID user_id, int month, int year) {
-        return expenseRepository.findByUserAndMonthAndYear(userRepository.findById(user_id).get(), month, year)
+    public ExpenseAllDTO findAllByUser(UUID user_id, int month, int year, Boolean paidOut, TypeofExpense typeofExpense) {
+
+        var expensesMounth = expenseRepository.findAllByPaidOutAndMonthAndYearAndUserId(
+                        userRepository.findById(user_id).get(), month, year, paidOut)
                 .stream().map(this::toExpensesAllDTO).toList();
+       var amount = 0;
+
+        for (ExpensesAllDTO expenseMounth : expensesMounth) {
+            amount = expenseMounth.getValue() + amount;
+        }
+
+        return ExpenseAllDTO.builder()
+                .expenses(expensesMounth)
+                .amaunt(amount)
+                .build();
     }
 
     public Optional<ExpenseModel> findById(UUID expense_id) {
         return expenseRepository.findById(expense_id);
+    }
+
+    public int findByExpenseForYear(UUID user_id, int year) {
+        var expensesYear = expenseRepository.findByUserAndYear(userRepository.findById(user_id).get(), year);
+        var amount = 0;
+
+        for (ExpenseModel expenseYear : expensesYear) {
+            amount = expenseYear.getValue() + amount;
+        }
+
+        return amount;
     }
 
     public ExpenseModel put(UUID expense_id, ExpenseModel model, ExpenseModel UpdateModel) {
@@ -86,7 +106,7 @@ public class ExpenseService {
 
     private void saveExpense(ExpenseModel expense) {
         ExpenseModel firstExpense = new ExpenseModel();
-        if (expense.getIsFixed() && expense.getTimeAccount() != null) {
+        if (expense.getIsFixed() && expense.getTimeAccount() > 0) {
             for (int i = 0; i < expense.getTimeAccount(); i++) {
                 ExpenseModel newExpense = ExpenseModel.builder()
                         .year(expense.getYear())

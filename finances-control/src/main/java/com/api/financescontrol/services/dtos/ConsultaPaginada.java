@@ -1,4 +1,4 @@
-package com.api.financescontrol.dtos;
+package com.api.financescontrol.services.dtos;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
