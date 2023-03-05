@@ -1,4 +1,4 @@
-package com.api.financescontrol.services.dtos.expense;
+package com.api.financescontrol.dtos.expense;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,5 +13,5 @@ import java.util.List;
 @NoArgsConstructor
 public class ExpenseAllDTO {
     private List<ExpensesAllDTO> expenses;
-    private Integer amaunt;
+    private Integer amount;
 }

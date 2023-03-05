@@ -1,4 +1,4 @@
-package com.api.financescontrol.services.dtos.expense;
+package com.api.financescontrol.dtos.expense;
 
 import com.api.financescontrol.enums.TypeofExpense;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -9,21 +9,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExpenseFilter {
+    private UUID user_id;
     private int month;
     private int year;
-
-    @Nullable
-    @JsonProperty(required = false)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Boolean paidOut;
-
-    @Nullable
-    @JsonProperty(required = false)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private TypeofExpense typeofExpense;
 }

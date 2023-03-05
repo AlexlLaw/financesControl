@@ -1,15 +1,18 @@
 package com.api.financescontrol.controllers;
 
-import com.api.financescontrol.services.dtos.expense.ExpenseAllDTO;
-import com.api.financescontrol.services.dtos.expense.ExpenseCreateDTO;
-import com.api.financescontrol.services.dtos.expense.ExpenseFilter;
+import com.api.financescontrol.dtos.expense.ExpenseAllDTO;
+import com.api.financescontrol.dtos.expense.ExpenseCreateDTO;
+import com.api.financescontrol.dtos.expense.ExpenseFilter;
+import com.api.financescontrol.enums.TypeofExpense;
 import com.api.financescontrol.models.ExpenseModel;
 import com.api.financescontrol.services.ExpenseService;
+import io.micrometer.common.lang.Nullable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,20 +26,27 @@ public class ExpenseController {
 
     private final ExpenseService expenseService;
 
-    @PostMapping("{user_id}")
-    public ResponseEntity<Object> create(@PathVariable(value = "user_id") UUID id,
-                                         @RequestBody @Valid ExpenseCreateDTO expenseCreateDTO
-    ) {
-        expenseService.save(expenseCreateDTO, id);
+    @PostMapping()
+    public ResponseEntity<Object> create(@RequestBody @Valid ExpenseCreateDTO expenseCreateDTO) {
+        expenseService.save(expenseCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Expense create success");
     }
 
-    @GetMapping("{user_id}")
-    public ResponseEntity<ExpenseAllDTO> findAllByUser(@PathVariable(value = "user_id") UUID user_id,
-                                                       @ModelAttribute ExpenseFilter expenseFilter
+    @GetMapping("{user_id}/{month}/{year}")
+    public ResponseEntity<Object> findAllByUser(
+                                               @PathVariable(value = "user_id") UUID user_id,
+                                               @PathVariable(value = "month") Integer month,
+                                               @PathVariable(value = "year") Integer year,
+                                               @Nullable
+                                               @RequestParam (value = "paidOut", required = false) Boolean paidOut,
+                                               @Nullable
+                                               @RequestParam (value = "typeofExpense", required = false) TypeofExpense typeofExpense,
+                                               @Nullable
+                                               @RequestParam (value = "isFixed", required = false) Boolean isFixed
     ) {
-        return  ResponseEntity.status(HttpStatus.OK).body(expenseService.findAllByUser(user_id, expenseFilter.getMonth(),
-                expenseFilter.getYear(), expenseFilter.getPaidOut(), expenseFilter.getTypeofExpense()));
+        return  ResponseEntity.status(HttpStatus.OK).body(expenseService.findAllByUser(user_id, month,
+                year, paidOut, typeofExpense, isFixed));
+
     }
 
     @GetMapping("{expense_id}/detail")

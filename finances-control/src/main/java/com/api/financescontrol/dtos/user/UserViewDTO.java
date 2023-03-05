@@ -1,4 +1,4 @@
-package com.api.financescontrol.services.dtos.user;
+package com.api.financescontrol.dtos.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

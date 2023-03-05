@@ -1,15 +1,19 @@
 package com.api.financescontrol.services;
 
-import com.api.financescontrol.services.dtos.expense.ExpenseAllDTO;
-import com.api.financescontrol.services.dtos.expense.ExpenseCreateDTO;
-import com.api.financescontrol.services.dtos.expense.ExpensesAllDTO;
+import com.api.financescontrol.config.ExpenseSpecifications;
+import com.api.financescontrol.dtos.expense.ExpenseAllDTO;
+import com.api.financescontrol.dtos.expense.ExpenseCreateDTO;
+import com.api.financescontrol.dtos.expense.ExpensesAllDTO;
 import com.api.financescontrol.enums.TypeofExpense;
 import com.api.financescontrol.models.ExpenseModel;
 import com.api.financescontrol.repositories.ExpenseRepository;
 import com.api.financescontrol.repositories.UserRepository;
+import com.api.financescontrol.utils.FileUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,23 +30,41 @@ public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
     private  final UserRepository userRepository;
+    private final FileUtil imageUtils;
 
     @Transactional
-    public void save(ExpenseCreateDTO expenseCreateDTO, UUID id) {
+    public void save(ExpenseCreateDTO expenseCreateDTO) {
         var expenseModel = new ExpenseModel();
         BeanUtils.copyProperties(expenseCreateDTO, expenseModel);
         expenseModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
-        expenseModel.setUser(userRepository.findById(id).get());
+        expenseModel.setUser(userRepository.findById(expenseCreateDTO.getUserId()).get());
 
         saveExpense(expenseModel);
     }
 
-    public ExpenseAllDTO findAllByUser(UUID user_id, int month, int year, Boolean paidOut, TypeofExpense typeofExpense) {
+    public ExpenseAllDTO findAllByUser(UUID user_id, int month, int year, Boolean paidOut,
+                                       TypeofExpense typeofExpense, Boolean isFixed
+    ){
+        var spec = Specification.where(ExpenseSpecifications.withUserAndMonthAndYear(user_id, month, year));
 
-        var expensesMounth = expenseRepository.findAllByPaidOutAndMonthAndYearAndUserId(
-                        userRepository.findById(user_id).get(), month, year, paidOut)
-                .stream().map(this::toExpensesAllDTO).toList();
-       var amount = 0;
+        if (paidOut != null) {
+            spec = spec.and(ExpenseSpecifications.withPaidOut(paidOut));
+        }
+
+        if (typeofExpense != null) {
+            spec = spec.and(ExpenseSpecifications.withTypeofExpense(typeofExpense));
+        }
+
+        if (isFixed != null) {
+            spec = spec.and(ExpenseSpecifications.withIsFixed(isFixed));
+        }
+
+        var expensesMounth = expenseRepository.findAll((Specification<ExpenseModel>) spec)
+                .stream().map(this::toExpensesAllDTO).toList();;
+//        var expensesMounth = expenseRepository.findByUserAndMonthAndYear(
+//                        userRepository.findById(user_id).get(), month, year)
+//                .stream().map(this::toExpensesAllDTO).toList();
+        var amount = 0;
 
         for (ExpensesAllDTO expenseMounth : expensesMounth) {
             amount = expenseMounth.getValue() + amount;
@@ -50,7 +72,7 @@ public class ExpenseService {
 
         return ExpenseAllDTO.builder()
                 .expenses(expensesMounth)
-                .amaunt(amount)
+                .amount(amount)
                 .build();
     }
 

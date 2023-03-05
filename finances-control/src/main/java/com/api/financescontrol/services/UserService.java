@@ -1,9 +1,9 @@
 package com.api.financescontrol.services;
 
-import com.api.financescontrol.services.dtos.user.UserFinancialCalculationDTO;
-import com.api.financescontrol.services.dtos.user.UserUpdateDTO;
-import com.api.financescontrol.services.dtos.user.UserViewDTO;
-import com.api.financescontrol.services.dtos.user.UsersAllDTO;
+import com.api.financescontrol.dtos.user.UserFinancialCalculationDTO;
+import com.api.financescontrol.dtos.user.UserUpdateDTO;
+import com.api.financescontrol.dtos.user.UserViewDTO;
+import com.api.financescontrol.dtos.user.UsersAllDTO;
 import com.api.financescontrol.models.UserModel;
 import com.api.financescontrol.repositories.UserRepository;
 import jakarta.transaction.Transactional;
